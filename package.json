@@ -1,0 +1,36 @@
+{
+  "name": "node-pgp-search",
+  "version": "0.0.1",
+  "description": "Search for a PGP key by email address using SKS Key Servers",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/xdamman/node-pgp-search.git"
+  },
+  "keywords": [
+    "pgp",
+    "gpg",
+    "sks",
+    "keyservers"
+  ],
+  "author": "Xavier Damman (@xdamman)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xdamman/node-pgp-search/issues"
+  },
+  "homepage": "https://github.com/xdamman/node-pgp-search",
+  "dependencies": {
+    "request": "^2.48.0"
+  },
+  "devDependencies": {
+    "chai": "^1.10.0",
+    "mocha": "^2.0.1",
+    "openpgp": "^0.8.2"
+  }
+}
