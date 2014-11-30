@@ -10,7 +10,7 @@ describe("pgp", function() {
 
   it("Finds the public PGP key for an email address", function(done) {
 
-    this.timeout(3000);
+    this.timeout(3500);
 
     pgpsearch.index(email, function(e, keys) {
       expect(e).to.not.exist;
@@ -22,7 +22,7 @@ describe("pgp", function() {
   });
 
   it("Returns an error if can't find a PGP key", function(done) {
-    this.timeout(3000);
+    this.timeout(3500);
     pgpsearch.index('notfound'+email, function(e, res) {
       expect(e).to.exist;
       done();
@@ -30,7 +30,7 @@ describe("pgp", function() {
   });
   
   it("Returns multiple keys", function(done) {
-    this.timeout(3000);
+    this.timeout(3500);
     var email = "glenn.greenwald@theintercept.com";
     pgpsearch.index(email, function(e, keys) {
       expect(e).to.not.exist;
@@ -53,6 +53,7 @@ describe("pgp", function() {
   });
 
   it("Returns an error if it can't find a PGP key for a given fingerprint", function(done) {
+    this.timeout(3500);
     pgpsearch.get(fingerprint.replace(/[0-9]/g,'0'), function(e, pgp) {
       expect(e).to.exist;
       done();

@@ -1,16 +1,51 @@
-var request = require('request');
+var fs = require('fs')
+  , request = require('request');
 
-var sks_server = "http://subset.pool.sks-keyservers.net:11371";
+/*
+ * Pool of key servers that accept the self signed CA certificate
+ * and that are up to date with the latest 1.1.5 version
+ */
+var sks_servers = [
+    "a.keyserver.pki.scientia.net"
+  , "ams.sks.heypete.com"
+  , "keys.alderwick.co.uk"
+  , "keys.digitalis.org"
+  , "keys2.alderwick.co.uk"
+  , "keys2.kfwebs.net"
+  , "keyserver.br.nucli.net"
+  , "keyserver.codinginfinity.com"
+  , "keyserver.nucli.net"
+  , "keyserver.secretresearchfacility.com"
+  , "keyserver.secure-u.de"
+  , "keyserver.stack.nl"
+  , "keyserver.ut.mephi.ru"
+  , "klucze.achjoj.info"
+  , "pgp.archreactor.org"
+  , "pgpkeys.co.uk"
+  , "pgpkeys.eu"
+];
+
+var getSKSserver = function() {
+  var index = Math.floor(Math.random()*sks_servers.length);
+  return "https://"+sks_servers[index];
+};
+
+var requestOptions = {
+  agentOptions: {
+    ca: fs.readFileSync('sks-keyservers.netCA.pem')
+  }
+};
 
 module.exports = {
 
   index: function(email, fn) {
 
-    var url = sks_server + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr";
-    request(url, function(err, res, body) {
-      console.error(err);
+    requestOptions.url = getSKSserver() + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr";
+    request(requestOptions, function(err, res, body) {
+      if(err) console.error(err);
       if(err) return fn(err);
       if(res.statusCode != 200) return fn(new Error("Not Found"));
+
 
       var lines = body.split('\n');
       var keys = [];
@@ -31,8 +66,8 @@ module.exports = {
   },
 
   get: function(fingerprint, fn) {
-    var url = sks_server + "/pks/lookup?search=0x"+fingerprint+"&op=get&fingerprint=on&options=mr";
-    request(url, function(err, res, body) {
+    requestOptions.url = getSKSserver() + "/pks/lookup?search=0x"+fingerprint+"&op=get&fingerprint=on&options=mr";
+    request(requestOptions, function(err, res, body) {
       if(err) return fn(err);
       if(res.statusCode != 200) return fn(new Error("Not Found"));
       return fn(null, body);
