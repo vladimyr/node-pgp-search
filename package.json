@@ -1,6 +1,6 @@
 {
   "name": "node-pgp-search",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Search for a PGP key by email address using SKS Key Servers",
   "main": "index.js",
   "directories": {
