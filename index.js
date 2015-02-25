@@ -32,7 +32,7 @@ var getSKSserver = function() {
 
 var requestOptions = {
   agentOptions: {
-    ca: fs.readFileSync('sks-keyservers.netCA.pem')
+    ca: fs.readFileSync(__dirname+'/sks-keyservers.netCA.pem')
   }
 };
 
