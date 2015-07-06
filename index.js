@@ -7,7 +7,6 @@ var fs = require('fs')
  */
 var sks_servers = [
     "ams.sks.heypete.com"
-  , "keys.alderwick.co.uk"
   , "keys.digitalis.org"
   , "keys2.kfwebs.net"
   , "keyserver.br.nucli.net"
@@ -16,6 +15,7 @@ var sks_servers = [
 //  , "keyserver.ut.mephi.ru" timeout
 //  , "pgp.archreactor.org" getaddrinfo ENOTFOUND
 //  , "keyserver.codinginfinity.com" certificate not trusted
+//  , "keys.alderwick.co.uk" certificate has expired
 //  , "keys2.alderwick.co.uk" certificate has expired
 //  , "keyserver.secure-u.de" certificate has expired
 //  , "a.keyserver.pki.scientia.net" certificate has expired
