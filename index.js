@@ -6,23 +6,23 @@ var fs = require('fs')
  * and that are up to date with the latest 1.1.5 version
  */
 var sks_servers = [
-    "a.keyserver.pki.scientia.net"
-  , "ams.sks.heypete.com"
+    "ams.sks.heypete.com"
   , "keys.alderwick.co.uk"
   , "keys.digitalis.org"
-  , "keys2.alderwick.co.uk"
   , "keys2.kfwebs.net"
   , "keyserver.br.nucli.net"
-  , "keyserver.codinginfinity.com"
   , "keyserver.nucli.net"
-  , "keyserver.secretresearchfacility.com"
-  , "keyserver.secure-u.de"
-  , "keyserver.stack.nl"
-  , "keyserver.ut.mephi.ru"
-  , "klucze.achjoj.info"
-  , "pgp.archreactor.org"
   , "pgpkeys.co.uk"
-  , "pgpkeys.eu"
+//  , "keyserver.ut.mephi.ru" timeout
+//  , "pgp.archreactor.org" getaddrinfo ENOTFOUND
+//  , "keyserver.codinginfinity.com" certificate not trusted
+//  , "keys2.alderwick.co.uk" certificate has expired
+//  , "keyserver.secure-u.de" certificate has expired
+//  , "a.keyserver.pki.scientia.net" certificate has expired
+//  , "keyserver.secretresearchfacility.com" certificate has expired
+//  , "keyserver.stack.nl" certificate has expired
+//  , "klucze.achjoj.info" certificate has expired
+//  , "pgpkeys.eu" certificate has expired
 ];
 
 var getSKSserver = function() {
