@@ -7,12 +7,27 @@ var fs = require('fs')
  */
 var sks_servers = [
     "ams.sks.heypete.com"
-  , "keys.alderwick.co.uk"
+  , "pgpkeys.co.uk"
   , "keys.digitalis.org"
   , "keys2.kfwebs.net"
-  , "keyserver.br.nucli.net"
   , "keyserver.nucli.net"
-  , "pgpkeys.co.uk"
+  , "keyserver.za.nucli.net"
+  , "keyserver.lsuhscshreveport.edu"
+  , "keyserver.witopia.net"
+  , "sks.openpgp-keyserver.de"
+  , "sks.undergrid.net"
+//  , "keyserver.br.nucli.net" timeout
+//  , "keys.fedoraproject.org" certificate not trusted
+//  , "keys.jhcloos.com" certificate has expired
+//  , "keys.niif.hu" unable to verify the first certificate
+//  , "keys.techwolf12.nl" timeout
+//  , "keyserver.zap.org.au" self signed certificate in certificate chain
+//  , "pgp.mit.edu" self signed certificate in certificate chain
+//  , "sks.alpha-labs.net" certificate not trusted
+//  , "sks.daylightpirates.org" certificate not trusted
+//  , "sks.karotte.org" timeout
+//  , "sks.spodhuis.org" self signed certificate in certificate chain
+//  , "zimmermann.mayfirst.org" unable to verify the first certificate
 //  , "keyserver.ut.mephi.ru" timeout
 //  , "pgp.archreactor.org" getaddrinfo ENOTFOUND
 //  , "keyserver.codinginfinity.com" certificate not trusted
@@ -27,6 +42,7 @@ var sks_servers = [
 
 var getSKSserver = function() {
   var index = Math.floor(Math.random()*sks_servers.length);
+  console.log("Using server ","https://"+sks_servers[index]);
   return "https://"+sks_servers[index];
 };
 
