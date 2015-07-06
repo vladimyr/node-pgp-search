@@ -31,6 +31,7 @@ var sks_servers = [
 //  , "keyserver.ut.mephi.ru" timeout
 //  , "pgp.archreactor.org" getaddrinfo ENOTFOUND
 //  , "keyserver.codinginfinity.com" certificate not trusted
+//  , "keys.alderwick.co.uk" certificate has expired
 //  , "keys2.alderwick.co.uk" certificate has expired
 //  , "keyserver.secure-u.de" certificate has expired
 //  , "a.keyserver.pki.scientia.net" certificate has expired
