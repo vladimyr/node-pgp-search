@@ -10,12 +10,12 @@ var sks_servers = [
   , "pgpkeys.co.uk"
   , "keys.digitalis.org"
   , "keys2.kfwebs.net"
-  , "keyserver.nucli.net"
-  , "keyserver.za.nucli.net"
   , "keyserver.lsuhscshreveport.edu"
-  , "keyserver.witopia.net"
-  , "sks.openpgp-keyserver.de"
   , "sks.undergrid.net"
+//  , "sks.openpgp-keyserver.de"
+//  , "keyserver.za.nucli.net"
+//  , "keyserver.nucli.net"
+//  , "keyserver.witopia.net"
 //  , "keyserver.br.nucli.net" timeout
 //  , "keys.fedoraproject.org" certificate not trusted
 //  , "keys.jhcloos.com" certificate has expired
@@ -43,7 +43,7 @@ var sks_servers = [
 
 var getSKSserver = function() {
   var index = Math.floor(Math.random()*sks_servers.length);
-  console.log("Using server ","https://"+sks_servers[index]);
+  // console.log("Using "+"https://"+sks_servers[index]);
   return "https://"+sks_servers[index];
 };
 
