@@ -1,12 +1,40 @@
 var openpgp = require('openpgp');
 var expect = require('chai').expect;
 var pgpsearch = require('../');
+var request = require('request');
 
 var email = "xdamman@gmail.com";
 var fingerprint = "44A7D05FF1F6D0B80F7915A614261B13FD430CDC";
 
 
 describe("pgp", function() {
+
+  it("All the servers should work", function(done) {
+    this.timeout(10*1000);
+    var n = pgpsearch.keyServers.length
+    var complete = 0
+
+    function response(err, res, body) {
+      if (err) {
+        done(err)
+      }
+      if (res.statusCode !== 200) {
+        done(new Error("Error: Status: " + res.statusCode))
+      }
+      complete = complete + 1
+      if (complete === n) {
+        done()
+      }
+    }
+
+    for (var i=0; i < pgpsearch.keyServers.length; i++) {
+      var requestOptions = {};
+      requestOptions.url = "https://" +pgpsearch.keyServers[i] + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr";
+      request(requestOptions, response)
+    }
+
+  });
+
 
   it("Finds the public PGP key for an email address", function(done) {
 
