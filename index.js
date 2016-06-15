@@ -11,8 +11,8 @@ var sks_servers = [
   , "key.ip6.li"
 ];
 
-var getSKSserver = function(idx) {
-  var index = idx || Math.floor(Math.random()*sks_servers.length);
+var getSKSserver = function() {
+  var index = Math.floor(Math.random()*sks_servers.length);
   return "https://"+sks_servers[index];
 };
 
@@ -23,11 +23,12 @@ module.exports = {
   keyServers: sks_servers,
 
   index: function(email, fn) {
-    requestOptions.url = getSKSserver() + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr";
+    var selectedHost = getSKSserver()
+    requestOptions.url = selectedHost + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr";
     request(requestOptions, function(err, res, body) {
-      if(err) console.error(err);
-      if(err) return fn(err);
-      if(res.statusCode != 200) return fn(new Error("Not Found"));
+      if(err) console.error(err, selectedHost);
+      if(err) return fn(new Error(err.message + " - Host:" + selectedHost));
+      if(res.statusCode != 200) return fn(new Error("Not Found - Host:" + selectedHost));
 
 
       var lines = body.split('\n');
