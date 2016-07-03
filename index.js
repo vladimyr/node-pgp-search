@@ -22,9 +22,13 @@ module.exports = {
 
   keyServers: sks_servers,
 
-  index: function(email, fn) {
+  index: function(email, fn, exact_match=false) {
     var selectedHost = getSKSserver()
-    requestOptions.url = selectedHost + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr";
+    var extraArgs = "";
+    if (exact_match) {
+      extraArgs = "&exact=on";
+    }
+    requestOptions.url = selectedHost + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr" + extraArgs;
     request(requestOptions, function(err, res, body) {
       if(err) console.error(err, selectedHost);
       if(err) return fn(new Error(err.message + " - Host:" + selectedHost));
