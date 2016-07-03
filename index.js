@@ -22,9 +22,13 @@ module.exports = {
 
   keyServers: sks_servers,
 
-  index: function(email, fn) {
+  index: function(email, fn, exact_match=false) {
     var selectedHost = getSKSserver()
-    requestOptions.url = selectedHost + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr";
+    var extraArgs = "";
+    if (exact_match) {
+      extraArgs = "&exact=on";
+    }
+    requestOptions.url = selectedHost + "/pks/lookup?search="+encodeURIComponent(email)+"&op=index&fingerprint=on&options=mr" + extraArgs;
     request(requestOptions, function(err, res, body) {
       if(err) console.error(err, selectedHost);
       if(err) return fn(new Error(err.message + " - Host:" + selectedHost));
@@ -38,7 +42,10 @@ module.exports = {
         if(l.substr(0,3) == 'pub') {
           var cols = l.split(':');
           if(cols[1].length == 40)
-            keys.push({fingerprint: cols[1], bits: cols[3], date: new Date(parseInt(cols[4]+'000',10)) });
+	    var f = null;
+	    if cols.length == 7:
+	      f = cols[6];
+            keys.push({fingerprint: cols[1], bits: cols[3], date: new Date(parseInt(cols[4]+'000',10)), flags: f });
           else {
             console.error("Invalid PGP fingerprint: ", cols[1]);
           }
