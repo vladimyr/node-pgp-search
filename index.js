@@ -41,12 +41,13 @@ module.exports = {
         var l = lines[i];
         if(l.substr(0,3) == 'pub') {
           var cols = l.split(':');
-          if(cols[1].length == 40)
+          if(cols[1].length == 40) {
 	    var f = null;
-	    if cols.length == 7:
+	    if (cols.length == 7) {
 	      f = cols[6];
+	    }
             keys.push({fingerprint: cols[1], bits: cols[3], date: new Date(parseInt(cols[4]+'000',10)), flags: f });
-          else {
+          } else {
             console.error("Invalid PGP fingerprint: ", cols[1]);
           }
         }
