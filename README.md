@@ -14,7 +14,7 @@ Search for a PGP key by email address using SKS Key Servers
 ### Get the list of keys for a given email address
 
     pgpsearch.index(email, function(err, keys) {
-	  // keys is an array of object { fingerprint: "", bits: 4096, date: Date }
+      // keys is an array of object { fingerprint: "", bits: 4096, date: Date }
     });
 
 ### Get the PGP key for a given fingerprint
