@@ -2,31 +2,31 @@
   "name": "node-pgp-search",
   "version": "0.1.6",
   "description": "Search for a PGP key by email address using SKS Key Servers",
-  "main": "index.js",
-  "directories": {
-    "test": "test"
-  },
-  "scripts": {
-    "lint": "eslint .",
-    "test": "mocha test",
-    "docs": "documentation readme index.js --section=API"
+  "keywords": [
+    "gpg",
+    "keyservers",
+    "pgp",
+    "sks"
+  ],
+  "homepage": "https://github.com/xdamman/node-pgp-search",
+  "bugs": {
+    "url": "https://github.com/xdamman/node-pgp-search/issues"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/xdamman/node-pgp-search.git"
   },
-  "keywords": [
-    "pgp",
-    "gpg",
-    "sks",
-    "keyservers"
-  ],
-  "author": "Xavier Damman (@xdamman)",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/xdamman/node-pgp-search/issues"
+  "author": "Xavier Damman (@xdamman)",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
   },
-  "homepage": "https://github.com/xdamman/node-pgp-search",
+  "scripts": {
+    "docs": "documentation readme index.js --section=API",
+    "lint": "eslint .",
+    "test": "mocha test"
+  },
   "dependencies": {
     "native-url": "^0.2.6",
     "request": "^2.48.0"
