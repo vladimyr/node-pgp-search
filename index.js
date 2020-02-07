@@ -1,68 +1,132 @@
 'use strict';
 
-var request = require('request');
+global.URL = global.URL = require('url').URL;
 
-/*
+const { format, promisify } = require('util');
+const request = promisify(require('request'));
+const url = require('native-url');
+
+const reHex = /^(0x)?[a-fA-F0-9]+$/;
+
+/**
  * Pool of key servers that accept the self signed CA certificate
- * and that are up to date with the latest 1.1.5 version
+ * and that are up to date with the latest 1.1.5 version.
  */
-var sks_servers = [
+const keyServers = [
   'pgp.key-server.io',
   'keyserver.ubuntu.com'
-  // 'key.ip6.li'
 ];
 
-var getSKSserver = function () {
-  var index = Math.floor(Math.random() * sks_servers.length);
-  return 'https://' + sks_servers[index];
+const randomKeyServer = () => {
+  const index = Math.floor(Math.random() * keyServers.length);
+  return keyServers[index];
 };
-
-var requestOptions = {};
 
 module.exports = {
-
-  keyServers: sks_servers,
-
-  index: function (email, fn, exact_match = false) {
-    var selectedHost = getSKSserver();
-    var extraArgs = '';
-    if (exact_match) {
-      extraArgs = '&exact=on';
-    }
-    requestOptions.url = selectedHost + '/pks/lookup?search=' + encodeURIComponent(email) + '&op=index&fingerprint=on&options=mr' + extraArgs;
-    request(requestOptions, function (err, res, body) {
-      if (err) console.error(err, selectedHost);
-      if (err) return fn(new Error(err.message + ' - Host:' + selectedHost));
-      if (res.statusCode !== 200) return fn(new Error('Not Found - Host:' + selectedHost));
-
-      var lines = body.split('\n');
-      var keys = [];
-      for (var i = 0; i < lines.length; i++) {
-        var l = lines[i];
-        if (l.substr(0, 3) === 'pub') {
-          var cols = l.split(':');
-          if (cols[1].length === 40) {
-            var f = null;
-            if (cols.length === 7) {
-              f = cols[6];
-            }
-            keys.push({ fingerprint: cols[1], bits: cols[3], date: new Date(parseInt(cols[4] + '000', 10)), flags: f });
-          } else {
-            console.error('Invalid PGP fingerprint: ', cols[1]);
-          }
-        }
-      }
-      fn(err, keys);
-    });
-  },
-
-  get: function (fingerprint, fn) {
-    requestOptions.url = getSKSserver() + '/pks/lookup?search=0x' + fingerprint + '&op=get&fingerprint=on&options=mr';
-    request(requestOptions, function (err, res, body) {
-      if (err) return fn(err);
-      if (res.statusCode !== 200) return fn(new Error('Not Found'));
-      return fn(null, body);
-    });
-  }
-
+  keyServers,
+  index,
+  get
 };
+
+/**
+ * Get list of keys for given search query
+ * @param {String} search email, key id or fingerprint
+ * @param {Object} [options]
+ * @param {Boolean} [options.exactMatch=false] force exact match
+ * @returns {Promise<Array<Key>>} retrived keys
+ *
+ * @example
+ * const keys = await pgpsearch.index('xdamman@gmail.com');
+ * //=>
+ * [{
+ *   fingerprint: '44A7D05FF1F6D0B80F7915A614261B13FD430CDC',
+ *   bits: 4096,
+ *   date: '2014-02-25T22:01:07.000Z',
+ *   flags: null
+ * }]
+ */
+async function index (search, { exactMatch = false } = {}) {
+  search = processSearch(search);
+  const url = buildUrl({ op: 'index', search });
+  if (exactMatch) {
+    url.searchParams.set('exact', 'on');
+  }
+  const resp = await request(url.href);
+  if (resp.statusCode !== 200) {
+    throw new Error('Not Found');
+  }
+  const lines = resp.body.split(/\r?\n/);
+  return lines.reduce((acc, line) => {
+    const columns = line.split(':');
+    if (columns[0] !== 'pub') {
+      return acc;
+    }
+    const fingerprint = columns[1];
+    if (fingerprint.length !== 40) {
+      console.error('Invalid PGP fingerprint:', fingerprint);
+      return acc;
+    }
+    const bits = parseInt(columns[3], 10);
+    const date = new Date(parseInt(columns[4], 10) * 1000 /* ms */);
+    const flags = columns[6] || null;
+    acc.push({ fingerprint, bits, date, flags });
+    return acc;
+  }, []);
+}
+
+/**
+ * Get the PGP key for given search query
+ * @param {String} search email, key id, or fingerprint
+ * @returns {Promise<String>} armor
+ *
+ * @example
+ * const pgp = await pgpsearch.index('0x44A7D05FF1F6D0B80F7915A614261B13FD430CDC');
+ * //=>
+ * `-----BEGIN PGP PUBLIC KEY BLOCK-----
+ * Version: SKS 1.1.6+
+ * Comment: Hostname: pgp.key-server.io
+ *
+ * mQINBFMNEqMBEACYhMtXUVtmTMwz77Gf5/FUYSnFW22MBAo0ExwCUAi6xXIJHtVcVml//44D
+ * 3mbAeaUPejiaS7DBXlomlxroCq2a1+qfqI0lVX+KNzUhDYjjcUsT7N6cMNLxBkaA5YOkrkZS…`
+ */
+async function get (search) {
+  search = processSearch(search);
+  const url = buildUrl({ op: 'get', search });
+  const resp = await request(url.href);
+  if (resp.statusCode !== 200) {
+    throw new Error('Not Found');
+  }
+  return resp.body;
+}
+
+function processSearch (search) {
+  if (search.includes('@')) {
+    return search;
+  }
+  if (reHex.test(search)) {
+    return format('0x%s', search.replace(/^0x/, '').toUpperCase());
+  }
+}
+
+function buildUrl ({ host = randomKeyServer(), op, search }) {
+  const query = {
+    search,
+    op,
+    fingerprint: 'on',
+    options: 'mr'
+  };
+  return new URL(url.format({
+    protocol: 'https:',
+    host,
+    pathname: '/pks/lookup',
+    query
+  }));
+}
+
+/**
+* @typedef {Object} Key
+* @property {String} fingerprint fingerprint
+* @property {Number} bits key size
+* @property {Date} date creation date
+* @property {String|null} flags optional key flags
+*/

@@ -9,13 +9,12 @@ const { promisify } = require('util');
 const request = promisify(require('request'));
 const url = require('native-url');
 
-pgpsearch.get = promisify(pgpsearch.get);
-pgpsearch.index = promisify(pgpsearch.index);
-
 const email = 'xdamman@gmail.com';
 const fingerprint = '44A7D05FF1F6D0B80F7915A614261B13FD430CDC';
 
 describe('pgp', function () {
+  this.timeout('5s');
+
   it('All the servers should work', () => {
     const query = {
       search: email,
@@ -59,9 +58,9 @@ describe('pgp', function () {
 
   it('Gets the PGP public key given a fingerprint', async () => {
     const pgp = await pgpsearch.get(fingerprint);
-    const publicKey = openpgp.key.readArmored(pgp);
-    const publicKey_fingerprint = publicKey.keys[0].primaryKey.getFingerprint().toUpperCase();
-    expect(publicKey_fingerprint).to.equal(fingerprint);
+    const publicKey = await openpgp.key.readArmored(pgp);
+    const { primaryKey } = publicKey.keys[0];
+    expect(primaryKey.getFingerprint().toUpperCase()).to.equal(fingerprint);
   });
 
   it("Returns an error if it can't find a PGP key for a given fingerprint", async () => {
