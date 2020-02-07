@@ -18,6 +18,9 @@
   },
   "license": "MIT",
   "author": "Xavier Damman (@xdamman)",
+  "files": [
+    "index.js"
+  ],
   "main": "index.js",
   "directories": {
     "test": "test"
