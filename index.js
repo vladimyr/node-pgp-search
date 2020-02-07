@@ -80,7 +80,7 @@ async function index (search, { exactMatch = false } = {}) {
  * @returns {Promise<String>} armor
  *
  * @example
- * const pgp = await pgpsearch.index('0x44A7D05FF1F6D0B80F7915A614261B13FD430CDC');
+ * const pgp = await pgpsearch.get('0x44A7D05FF1F6D0B80F7915A614261B13FD430CDC');
  * //=>
  * `-----BEGIN PGP PUBLIC KEY BLOCK-----
  * Version: SKS 1.1.6+
