@@ -13,7 +13,7 @@ const reHex = /^(0x)?[a-fA-F0-9]+$/;
  * and that are up to date with the latest 1.1.5 version.
  */
 const keyServers = [
-  'pgp.key-server.io',
+  'sks-keyservers.net',
   'keyserver.ubuntu.com'
 ];
 
